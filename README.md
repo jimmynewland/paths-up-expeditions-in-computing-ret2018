@@ -11,8 +11,10 @@ https://github.com/WorldFamousElectronics/PulseSensorPlayground
 
 Various signal processing projects and hardware explorations were a part of the
 Research Experience for Teachers in the summer of 2018.
+https://www.rstem.rice.edu/paths-up-ret
 
 This code is not approved for medical use and should be considered for research
 purposes only.
 
-J Newland newton@jayfox.net
+Maintained by:
+J Newland newton@jayfox.net https://jimmynewland.com/
