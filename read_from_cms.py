@@ -19,6 +19,13 @@ Usage: This script pulls live data from the Contech CMS D50+ Pulse Oximeter.
 '''
 import cmsd50plus as cms
 
+# A simple helper function to print the serial ports available on the system.
+def print_serial_ports():
+    import serial.tools.list_ports
+    ports = [comport.device for comport in serial.tools.list_ports.comports()]
+    for port in ports:
+        print port
+
 # main() function
 def main():
     # Print serial ports
@@ -54,10 +61,3 @@ def main():
 # call main
 if __name__ == '__main__':
     main()
-
-# A simple helper function to print the serial ports available on the system.
-def print_serial_ports():
-    import serial.tools.list_ports
-    ports = [comport.device for comport in serial.tools.list_ports.comports()]
-    for port in ports:
-        print port
