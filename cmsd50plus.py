@@ -6,7 +6,7 @@ from datetime import datetime
 import csv
 import io
 
-def cms_serial(portstr,csv=True):
+def cms_serial(portstr,csv=True,csvStr=None):
     # Below is the sequence of messages that the SpO2 monitoring app sends to the CMS50D+.
     controlData = []
 
@@ -23,7 +23,7 @@ def cms_serial(portstr,csv=True):
     start_time = datetime.now()
     csvFileName = ''
     if csv:
-        csvFileName = setup_csv()
+        csvFileName = setup_csv(csvStr)
     output = {'port':port,'data':data,'start_time':start_time,'csvFileName':csvFileName}
 
     return output
@@ -31,7 +31,7 @@ def cms_serial(portstr,csv=True):
 def get_buffer(port,data):
     numSymbols = 9
     buf = array.array('B')
-    while port.inWaiting == 0:
+    while port.in_waiting != 9:
         time.sleep(0.005)
 
     buf.fromstring(port.read(128))
@@ -97,9 +97,12 @@ def get_cms_data(init):
             save_to_csv(init['csvFileName'],single_record)
     return single_record
 
-def setup_csv():
+def setup_csv(csvStr=None):
     now = datetime.now()
-    csvFileName = 'cmsd50plus_'+now.strftime("%Y-%m-%d_%I_%M_%S")
+    if csvStr is None:
+        csvFileName = 'cmsd50plus_'+now.strftime("%Y-%m-%d_%I_%M_%S")
+    else:
+        csvFileName = csvStr+'_'+now.strftime("%Y-%m-%d_%I_%M_%S")
     headers = unicode(u'pulseWaveform'+','+u'pulseRate'+','+u'time')
     with io.open(csvFileName + '.csv', 'w', newline='') as f:
         f.write(headers)
