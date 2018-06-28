@@ -31,7 +31,7 @@ def cms_serial(portstr,csv=True,csvStr=None):
 def get_buffer(port,data):
     numSymbols = 9
     buf = array.array('B')
-    while port.in_waiting != 9:
+    while port.in_waiting == 0:
         time.sleep(0.005)
 
     buf.fromstring(port.read(128))

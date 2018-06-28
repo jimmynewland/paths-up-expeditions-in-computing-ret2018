@@ -68,7 +68,7 @@ def main():
     # Alternately, the serial ports can be listed from the OS X command line:
     # ls /dev/tty.*
     port1 = '/dev/tty.SLAB_USBtoUART'
-    port2 = '/dev/tty.SLAB_USBtoUART10'
+    port2 = '/dev/tty.SLAB_USBtoUART28'
     
     csvFilename = setup_csv('two_cms50dplus')
 
