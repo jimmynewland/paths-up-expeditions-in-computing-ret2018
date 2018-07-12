@@ -1,3 +1,6 @@
 .DS_Store
 cmsd50plus.pyc
 cmsd50plus_live.py
+*.csv
+heartbeat.py
+*.xlsx

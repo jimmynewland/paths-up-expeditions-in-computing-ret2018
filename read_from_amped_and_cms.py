@@ -8,7 +8,7 @@ import cms50dplus as cms
 import csv
 import io
 
-amped_comport = '/dev/tty.usbmodem1411'
+amped_comport = '/dev/tty.usbmodem1421'
 amped_baudrate = 115200
 amped_serial_timeout = 1
 
@@ -42,7 +42,9 @@ def save_to_csv(csvFileName, allData):
         f.write(row)
         f.write(u'\n')  
 
+#print('reading from serial port %s...' % amped_comport)
 ser = serial.Serial(amped_comport, amped_baudrate, timeout=amped_serial_timeout)    # open serial port
+
 
 def get_data_amped():
     bpm = -1
@@ -50,26 +52,38 @@ def get_data_amped():
     signal = -1
     serialRead = ser.readline()
     single_record = {}
+    #print(serialRead)
     read_time = datetime.now()    
     arduino_input = serialRead.strip()
+    #print(arduino_input)
 
     if arduino_input.count(",") == 2:
         bpm,ibi,signal = arduino_input.split(',')
         elapsed = (read_time - now).total_seconds()
+        #if len(bpm) > 0 and len(signal) > 0:
         single_record['pulseRate'] = int(bpm)
         single_record['pulseWaveform'] = int(signal)
         single_record['ibi'] = int(ibi)
         single_record['time'] = elapsed
         return single_record
     else:
-        return {"pulseRate":0,"pulseWaveform":0,"time":0,"ibi":0}
+        return {"pulseRate":0,"pulseWaveform":0,"time":0}
 
-csvFilename = setup_csv('amped')
+csvFilename = setup_csv('amped_and_cms50dplus')
+
+port = '/dev/tty.SLAB_USBtoUART'
+cms_init = cms.cms_serial(port,False,csvStr='amped_and_cms_')
+
+#time.sleep(5)    
 
 while True:
+    cmsData = cms.get_cms_data(cms_init)
     read_amped = get_data_amped()
+    allData = read_amped,cmsData
 
-    print("PPG:{}\tT(s):{}\tHR(BPM):{}\tIBI(ms):{}".format(
-          read_amped['pulseWaveform'], read_amped['time'],read_amped['pulseRate'], read_amped['ibi']))
-    #save_to_csv(csvFilename, read_amped)
+    print("PR1:{}\tSig1:{}\tT1:{}\tPR2:{}\tSig2:{}\tT2:{}".format(
+          read_amped['pulseRate'],read_amped['pulseWaveform'], read_amped['time'],
+          cmsData['pulseRate'],cmsData['pulseWaveform'], cmsData['time']
+         ))
+    save_to_csv(csvFilename, allData)
     time.sleep(0.02)
